@@ -34,6 +34,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-dejavu-core \
     dbus-x11 \
     xdg-utils \
+    iputils-ping \
+    openssh-client \
+    curl \
+    git \
+    jq \
+    ripgrep \
+    gh \
+    ffmpeg \
+    poppler-utils \
+    npm \
+    python3-pip \
+    unzip \
   && rm -rf /var/lib/apt/lists/* \
   && groupadd --gid 1000 rakazo \
   && useradd --uid 1000 --gid rakazo --create-home --shell /bin/bash rakazo \
@@ -58,6 +70,9 @@ COPY --chmod=644 fluxbox.menu /etc/rakazo/fluxbox/menu
 COPY --chmod=644 embed.html /usr/share/novnc/embed.html
 COPY --chmod=644 clipboard-bridge.js /usr/share/novnc/clipboard-bridge.js
 COPY --chmod=644 mobile-keyboard.js /usr/share/novnc/mobile-keyboard.js
+# Agent toolchain: bun + uv (installed as root into /usr/local so USER 1000 can use them).
+RUN npm install -g bun \
+  && pip3 install --break-system-packages uv
 # Strip CR so shebangs work even if the build context came from a CRLF checkout.
 RUN ldconfig \
   && sed -i 's/\r$//' /usr/local/bin/rakazo-computer /usr/local/bin/rakazo-computer-control /usr/local/bin/rakazo-browser /usr/local/bin/rakazo-page-browser \
